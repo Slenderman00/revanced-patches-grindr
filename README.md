@@ -1,3 +1,3 @@
-## 🧩 ReVanced Patches
+## ReVanced Bundle for Grindr
 
-Patches for ReVanced.
+```java -jar patch <apk> -b <bundle.jar> --out <output> --force```
