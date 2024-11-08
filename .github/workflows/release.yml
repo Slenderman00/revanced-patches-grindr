@@ -6,14 +6,13 @@ on:
     branches:
       - main
       - dev
-  pull_request:
-    branches:
-      - main
-      - dev
 
 jobs:
   release:
     name: Release
+    permissions:
+      contents: write
+      packages: write
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -27,10 +26,10 @@ jobs:
       - name: Cache Gradle
         uses: burrunan/gradle-cache-action@v1
 
-      - name: Build with Gradle
+      - name: Build
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: ./gradlew clean build
+        run: ./gradlew generateMeta clean
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -43,5 +42,5 @@ jobs:
 
       - name: Release
         env:
-          GITHUB_TOKEN: ${{ secrets.REPOSITORY_PUSH_ACCESS }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: npm exec semantic-release
