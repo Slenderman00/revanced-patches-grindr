@@ -131,4 +131,3 @@ node_modules/
 #ignoring all builds
 build/
 gradle.properties
-
