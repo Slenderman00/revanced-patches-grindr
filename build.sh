@@ -1,0 +1,2 @@
+./gradlew :apiDump
+./gradlew build
