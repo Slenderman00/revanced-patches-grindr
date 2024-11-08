@@ -1,8 +1,11 @@
 import org.gradle.kotlin.dsl.support.listFilesOrdered
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
-    kotlin("jvm") version "1.9.10"
+    alias(libs.plugins.kotlin)
+    alias(libs.plugins.binary.compatibility.validator)
     `maven-publish`
+    signing
 }
 
 group = "patches.grindr"
@@ -11,7 +14,14 @@ repositories {
     mavenCentral()
     mavenLocal()
     google()
-    maven { url = uri("https://jitpack.io") }
+    maven {
+        // A repository must be specified for some reason. "registry" is a dummy.
+        url = uri("https://maven.pkg.github.com/revanced/registry")
+        credentials {
+            username = project.findProperty("gpr.user") as String? ?: System.getenv("GITHUB_ACTOR")
+            password = project.findProperty("gpr.key") as String? ?: System.getenv("GITHUB_TOKEN")
+        }
+    }
 }
 
 dependencies {
@@ -21,32 +31,40 @@ dependencies {
     implementation(libs.guava)
     // Used in JsonGenerator.
     implementation(libs.gson)
-
-    // A dependency to the Android library unfortunately fails the build, which is why this is required.
-    compileOnly(project("dummy"))
+    // Android API stubs defined here.
+    compileOnly(project(":stub"))
 }
 
 kotlin {
-    jvmToolchain(11)
-}
-
-tasks.withType(Jar::class) {
-    manifest {
-        attributes["Name"] = "Grindr patches"
-        attributes["Description"] = "Patches for Grindr."
-        attributes["Version"] = version
-        attributes["Timestamp"] = System.currentTimeMillis().toString()
-        attributes["Source"] = "git@github.com:Slenderman00/revanced-patches-grindr.git"
-        attributes["Author"] = "You"
-        attributes["Contact"] = "joarheimonen@live.no"
-        attributes["Origin"] = "https://joar.me"
-        attributes["License"] = "GNU General Public License v3.0"
+    compilerOptions {
+        jvmTarget.set(JvmTarget.JVM_11)
     }
 }
 
+java {
+    targetCompatibility = JavaVersion.VERSION_11
+}
+
 tasks {
-    register<DefaultTask>("generateBundle") {
-        description = "Generate DEX files and add them in the JAR file"
+    withType(Jar::class) {
+        exclude("app/revanced/meta")
+
+        manifest {
+            attributes["Name"] = "Grindr patches"
+            attributes["Description"] = "Patches for Grindr."
+            attributes["Version"] = version
+            attributes["Timestamp"] = System.currentTimeMillis().toString()
+            attributes["Source"] = "git@github.com:Slenderman00/revanced-patches-grindr.git"
+            attributes["Author"] = "You"
+            attributes["Contact"] = "joarheimonen@live.no"
+            attributes["Origin"] = "https://joar.me"
+            attributes["License"] = "GNU General Public License v3.0"
+        }
+    }
+
+    register("buildDexJar") {
+        description = "Build and add a DEX to the JAR file"
+        group = "build"
 
         dependsOn(build)
 
@@ -54,28 +72,37 @@ tasks {
             val d8 = File(System.getenv("ANDROID_HOME")).resolve("build-tools")
                 .listFilesOrdered().last().resolve("d8").absolutePath
 
-            val artifacts = configurations.archives.get().allArtifacts.files.files.first().absolutePath
+            val patchesJar = configurations.archives.get().allArtifacts.files.files.first().absolutePath
             val workingDirectory = layout.buildDirectory.dir("libs").get().asFile
 
             exec {
                 workingDir = workingDirectory
-                commandLine = listOf(d8, artifacts)
+                commandLine = listOf(d8, "--release", patchesJar)
             }
 
             exec {
                 workingDir = workingDirectory
-                commandLine = listOf("zip", "-u", artifacts, "classes.dex")
+                commandLine = listOf("zip", "-u", patchesJar, "classes.dex")
             }
         }
     }
 
-    // Required to run tasks because Gradle semantic-release plugin runs the publish task.
+    register<JavaExec>("generatePatchesFiles") {
+        description = "Generate patches files"
+
+        dependsOn(build)
+
+        classpath = sourceSets["main"].runtimeClasspath
+        mainClass.set("app.revanced.generator.MainKt")
+    }
+
+    // Needed by gradle-semantic-release-plugin.
     // Tracking: https://github.com/KengoTODA/gradle-semantic-release-plugin/issues/435
-    named("publish") {
-        dependsOn("generateBundle")
+    publish {
+        dependsOn("buildDexJar")
+        dependsOn("generatePatchesFiles")
     }
 }
-
 publishing {
     publications {
         create<MavenPublication>("revanced-patches-publication") {
