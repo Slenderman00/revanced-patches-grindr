@@ -1,3 +1,15 @@
+# [1.5.0](https://github.com/Slenderman00/revanced-patches-grindr/compare/v1.4.0...v1.5.0) (2024-11-08)
+
+
+### Features
+
+* added missing files ([83efa70](https://github.com/Slenderman00/revanced-patches-grindr/commit/83efa7068ecc8c597d821960a81c4e9307de58ab))
+* added resources ([2a0c2eb](https://github.com/Slenderman00/revanced-patches-grindr/commit/2a0c2eba983078712e64dff6334b69f74a3854a1))
+* merged changes from revanced-patches main branch ([cb719d4](https://github.com/Slenderman00/revanced-patches-grindr/commit/cb719d42de2f8ebfc5e4551a28f31df352db15a5))
+* updated action ([ed1cf63](https://github.com/Slenderman00/revanced-patches-grindr/commit/ed1cf63f264945ffa9abb825be26536fbfed0929))
+* updated action ([709d03d](https://github.com/Slenderman00/revanced-patches-grindr/commit/709d03d8b635d663f91aa941e557a2e07074265e))
+* updated release workflow ([8fc49d1](https://github.com/Slenderman00/revanced-patches-grindr/commit/8fc49d1b4ee39189c7f5c83d6d5442b212728c95))
+
 # [1.4.0](https://github.com/Slenderman00/revanced-patches-grindr/compare/v1.3.2...v1.4.0) (2024-11-05)
 
 
