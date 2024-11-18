@@ -1,3 +1,10 @@
+# [1.6.0](https://github.com/Slenderman00/revanced-patches-grindr/compare/v1.5.0...v1.6.0) (2024-11-18)
+
+
+### Features
+
+* updated spoofed version ([9bfd2cb](https://github.com/Slenderman00/revanced-patches-grindr/commit/9bfd2cb33c77bba9147743353c69371b017f1429))
+
 # [1.5.0](https://github.com/Slenderman00/revanced-patches-grindr/compare/v1.4.0...v1.5.0) (2024-11-08)
 
 
