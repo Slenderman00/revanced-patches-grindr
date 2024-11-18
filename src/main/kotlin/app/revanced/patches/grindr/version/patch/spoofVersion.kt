@@ -40,7 +40,7 @@ class SpoofVersionPatch : BytecodePatch(
         private var grindrVersion =
         stringPatchOption(
             key = "grindr-version",
-            default = "24.12.0",
+            default = "24.17.1",
             title = "Grindr version",
             description = "The grindr version to spoof.",
             required = true,
@@ -49,7 +49,7 @@ class SpoofVersionPatch : BytecodePatch(
         private var grindrVersionIdentifier =
         stringPatchOption(
             key = "grindr-version-identifier",
-            default = "127593",
+            default = "131488",
             title = "Grindr version identifier",
             description = "The grindr version identifier to spoof.",
             required = true,
