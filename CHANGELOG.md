@@ -3,6 +3,16 @@
 
 ### Features
 
+* added user agent ([63b9f84](https://github.com/Slenderman00/revanced-patches-grindr/commit/63b9f84ec5f257b43c96bedd5b37b6cc45387a67))
+* better random dev info ([55a5b6f](https://github.com/Slenderman00/revanced-patches-grindr/commit/55a5b6faa1c9082686ea946463cf5cec6e726bf3))
+* reverted back to 1.4.0 and fixed device id spoofing ([af02a7f](https://github.com/Slenderman00/revanced-patches-grindr/commit/af02a7f862f26da85023181cfec7282a2f154c7a))
+* updated version ([1809421](https://github.com/Slenderman00/revanced-patches-grindr/commit/1809421e2bff9d73a56f5fbfeb386926c12659c3))
+
+# [1.5.0](https://github.com/Slenderman00/revanced-patches-grindr/compare/v1.4.0...v1.5.0) (2024-12-21)
+
+
+### Features
+
 * better random dev info ([55a5b6f](https://github.com/Slenderman00/revanced-patches-grindr/commit/55a5b6faa1c9082686ea946463cf5cec6e726bf3))
 * reverted back to 1.4.0 and fixed device id spoofing ([af02a7f](https://github.com/Slenderman00/revanced-patches-grindr/commit/af02a7f862f26da85023181cfec7282a2f154c7a))
 * updated version ([1809421](https://github.com/Slenderman00/revanced-patches-grindr/commit/1809421e2bff9d73a56f5fbfeb386926c12659c3))
