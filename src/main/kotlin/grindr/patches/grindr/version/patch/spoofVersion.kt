@@ -6,6 +6,7 @@ import app.revanced.patcher.data.BytecodeContext
 import app.revanced.patcher.patch.BytecodePatch
 import app.revanced.patcher.patch.PatchResult
 
+import app.revanced.patches.grindr.deviceinfo.fingerprints.*
 import app.revanced.patches.grindr.version.fingerprints.*
 import com.android.tools.smali.dexlib2.iface.instruction.OneRegisterInstruction
 import app.revanced.patcher.extensions.InstructionExtensions.replaceInstructions
@@ -18,6 +19,10 @@ import app.revanced.patcher.util.proxy.mutableTypes.MutableMethod
 import app.revanced.patcher.patch.options.PatchOption.PatchExtensions.stringPatchOption
 
 import app.revanced.patches.grindr.firebase.patch.FirebaseGetCertPatchGrindr
+
+fun genUserAgent(grindrVersion: String, grindrVersionIdentifier: String): String {
+    return "grindr3/$grindrVersion.$grindrVersionIdentifier;$grindrVersionIdentifier;Free;Android 14;pixel_9_pro_xl;Google"
+}
 
 @Patch(
     name = "Spoof versions",
@@ -34,6 +39,7 @@ import app.revanced.patches.grindr.firebase.patch.FirebaseGetCertPatchGrindr
 class SpoofVersionPatch : BytecodePatch(
     setOf(
         AppConfigurationFingerprint,
+        DeviceinfoFingerprint
     )
 ) {
 
@@ -56,8 +62,14 @@ class SpoofVersionPatch : BytecodePatch(
         ) { it!!.matches("^\\d{6}$".toRegex()) }
 
     override fun execute(context: BytecodeContext) {        
+        val userAgentPatch = String.format("const-string v0, \"%s\"",genUserAgent("$grindrVersion", "$grindrVersionIdentifier"))
+        println(userAgentPatch)
+
+        val deviceinfoFingerprint = DeviceinfoFingerprint.result!!.mutableMethod
         val appConfigurationFingerprintMethod = AppConfigurationFingerprint.result!!.mutableMethod
         appConfigurationFingerprintMethod.replaceInstructions(11, """const-string v9, "${grindrVersion}"""")
         appConfigurationFingerprintMethod.replaceInstructions(88, """const-string v1, "${grindrVersion}.${grindrVersionIdentifier}"""")
+
+        deviceinfoFingerprint.addInstructions(112, userAgentPatch)
     }
 }
