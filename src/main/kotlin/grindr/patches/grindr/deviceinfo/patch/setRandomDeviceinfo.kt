@@ -28,6 +28,12 @@ fun genLDevInfo(): String {
     return "$hexIdentifier;GLOBAL;2;$randomInteger;2277x1080;${identifier.toString().lowercase()}"
 }
 
+fun genLDevInfoAnon(): String {
+    val identifier = UUID.randomUUID()
+    val hexIdentifier = identifier.toString().lowercase()
+    return "anon-$hexIdentifier;*;*;*;*;*"
+}
+
 @Patch(
     name = "Random device info",
     description = "Sets a random device info.",
@@ -47,12 +53,14 @@ class UnlockUnlimitedPatch : BytecodePatch(
 ) {
     override fun execute(context: BytecodeContext) {
         val bytecode_patch = String.format("const-string v0, \"%s\"", genLDevInfo())
+        val bytecode_patch_anon = String.format("const-string v0, \"%s\"", genLDevInfoAnon())
     
         val deviceinfoFingerprint = DeviceinfoFingerprint.result!!.mutableMethod
 
         println(bytecode_patch)
         deviceinfoFingerprint.replaceInstructions(83, bytecode_patch)
-        deviceinfoFingerprint.replaceInstructions(99, bytecode_patch)
+        deviceinfoFingerprint.replaceInstructions(99, bytecode_patch_anon)
+        deviceinfoFingerprint.replaceInstructions(104, bytecode_patch_anon)
     }
     
 }
